@@ -1,0 +1,12 @@
+{
+    "name": "acs/twig",
+    "require": {
+        "twig/twig": "^3.4"
+    },
+    "authors": [
+        {
+            "name": "Mattingly39",
+            "email": "107488163+Mattingly39@users.noreply.github.com"
+        }
+    ]
+}

@@ -1,0 +1,126 @@
+
+{% block Center %}
+<style>
+    .bg_cal {
+        background: url("/public/images/calendrier.png");
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        transform-origin: left 50px;
+        transform-style: preserve-3d;
+        animation: flipfront 0.5s ease-out backwards;
+        }
+        @keyframes flipfront{
+          0% {transform: rotateX(0);}
+          50% {transform: perspective(1000px) rotateX(0.5turn) skewX(-5deg);}
+          100% {transform: rotateX(0);}
+        }
+    .bg_cal1 {
+      background: url("{{ mybgimage }}");
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      }
+    .bg_cal2 {
+      background: url("/public/images/calendrier.png");
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      }
+</style>
+
+{% if change == 1 %}
+  <div class="bg_cal1">
+  <div class="bg_cal">
+  <embed src="../public/page_turn.mp3">
+{% else %}
+  <div>
+  <div class="bg_cal2">
+{% endif %}
+
+ {# line 1 #} 
+{% if line < 5.5 %}
+  <div class="matrix4l"><br>
+{% elseif line <= 7 %}
+  <div class="matrix5l"><br>
+{% else %}
+  <div class="matrix6l"><br>
+{% endif %}
+<div></div>
+<div class ="month">
+<form method="GET">
+    <select name="month" id="month"
+            class="text-5xl font-bold tracking-wide text-center filter drop-shadow-xl text-white bg-transparent hover:underline
+            appearance-none dark:text-black dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 focus:text-5xl focus:text-black"
+            onchange="window.location = '../?change=1&year={{ year }}&idcal={{ idcal }}&month='+this.value">
+                {% for value, mon in months %}
+                <option value="{{ mon }}" {% if month == mon %}selected{%endif%}>{{ value }}</option>
+                {% endfor %} 
+    </select>
+</form> 
+</div>
+<div class ="year">
+<form method="GET">
+    <select name="year" id="year"
+            class="text-5xl font-bold tracking-wide text-center filter drop-shadow-xl text-white bg-transparent hover:underline
+            appearance-none dark:text-black dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 focus:text-5xl focus:text-black"
+            onchange="window.location = '../?change=1&month={{ month }}&idcal={{ idcal }}&year='+this.value">
+            <option value="{{ year }}">{{ year }}</option>
+            {% for value, ye in '2022'..'2032' %}
+            {% if ye != year %}
+            <option value="{{ ye }}">&nbsp;{{ ye }}&nbsp;</option>
+            {% endif %} 
+            {% endfor %}
+    </select>
+</form> 
+</div>
+ 
+ {# line 2 #} 
+<div><strong>Dimanche</strong></div>
+<div><strong>Lundi</strong></div>
+<div><strong>Mardi</strong></div>
+<div><strong>Mercredi</strong></div>
+<div><strong>Jeudi</strong></div>
+<div><strong>Vendredi</strong></div>
+<div><strong>Samedi</strong></div>
+
+ {# line 3++ #} 
+{{ divtwig|raw }}
+{% set jouract = currentyear ~ '-' ~ moisencours ~ '-' ~ currentday %}
+{% for day in 1..number %}
+  {% set debut = year ~ '-' ~ "%02d"|format(monthnew) ~ '-' ~ "%02d"|format(day) %}
+  {% for event in resultevents|filter(event => event == debut and event == jouract) %}  
+    <div class="text-5xl font-bold tracking-wide text-center filter drop-shadow-xl text-white hover:underline"><a class="circlebig" href="../?day={{ day }}&year={{ year }}&month={{ month }}&idcal={{ idcal }}&change=0" title="Afficher les évènements"> {{ "%02d"|format(day) }}</a><sup>&bull;</sup></div>
+    {% else %}
+  {% for event in resultevents|filter(event => event == debut and event != jouract) %}  
+    <div class="text-5xl font-bold tracking-wide text-center filter drop-shadow-xl hover:underline"><a href="../?day={{ day }}&year={{ year }}&month={{ month }}&idcal={{ idcal }}&change=0" title="Afficher les évènements"> {{ "%02d"|format(day) }}</a><sup>&bull;</sup></div>
+      {% else %}
+      {% if year == currentyear and day == currentday and month == currentmonth %}
+        <div class="text-5xl font-bold tracking-wide text-center filter drop-shadow-xl text-white"><a class="circlebig">{{ "%02d"|format(day) }}</a></div>
+      {% else %}  
+        <div class="text-5xl font-bold tracking-wide text-center filter drop-shadow-xl"> {{ "%02d"|format(day) }}</div>   
+      {% endif %}
+  {% endfor %}    
+{% endfor %}    
+{% endfor %}    
+</div>
+</div>
+
+{# boutons navigation bottom #} 
+<div class="text-center">
+{% if monthnew == '1' %}
+  {% set year = year - 1 %}
+{% endif %}
+<button class="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold rounded"><a class="px-2 w-full h-full" href="../?year={{ year }}&monthnew={{ month|date_modify("-1 month")|date("m") }}&idcal={{ idcal }}&change=1">&#8678;</a></button>
+<button class="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-1 rounded"><a class="px-10 w-full h-full" href="../?month={{ currentmonth }}&year={{ currentyear }}&monthnew={{ currentmonth|date("m") }}&idcal={{ idcal }}&change=1">Mois en cours</a></button>
+{% if monthnew == '12' %}
+  {% set year = year + 1 %}
+{% endif %}
+<button class="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold rounded"><a class="px-2 w-full h-full" href="../?year={{ year }}&monthnew={{ month|date_modify("+1 month")|date("m") }}&idcal={{ idcal }}&change=1">&#8680;</a></button>
+</div>
+</div>
+
+{% endblock %}

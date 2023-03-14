@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charSet="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <title>Mon blog</title>
+    <meta name="description" content="Blog"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .background-primary {
+            background: radial-gradient(at 71% 77%, #7d7aff 0, transparent 21%), radial-gradient(at 36% 47%, #00fff0 0, transparent 50%), radial-gradient(at 54% 29%, #00fff0 0, transparent 28%), radial-gradient(at 45% 51%, #7d7aff 0, transparent 53%), radial-gradient(at 73% 44%, #2121e2 0, transparent 54%), radial-gradient(at 24% 7%, #2121e2 0, transparent 40%), radial-gradient(at 76% 46%, #7d7aff 0, transparent 50%);
+            opacity: 60%;
+        }
+    </style>
+</head>
+<body class="antialiased text-lg bg-white">
+<div class="background-primary fixed left-0 w-full h-full top-20 z-[-1] max-w-sm left-1/2 translate-x-[-50%] blur-[44px]"></div>
+<div class="flex flex-col items-center max-w-2xl w-full mx-auto">
+    <header class="pt-20 pb-12">
+        <p class="text-2xl text-center">
+        <?php
+        $year=date('Y');
+        $month=date('m');
+        ?>
+    <a href="../?year=<?php echo $year; ?>&change=1&monthnew=<?php echo $month; ?>"><img src="../public/images/lilas.png" alt="Logo lilas" title="Back Homepage"><h1 class="text-6xl text-center">LIL'AGENDA</h1></a>
+        </p>
+    </header>
+    <main>
+        <h1 class="text-4xl text-center">La page demandée n'existe pas.</h1>
+    </main>
+</div>
+</body>
+</html>

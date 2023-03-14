@@ -1,0 +1,93 @@
+
+{% block head %}
+<title>Home</title>
+{% endblock %}
+
+{% block content %}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="../public/style/style.css">
+
+{# Modals #}
+
+{% block Modals %}
+{% include 'modalsView.twig' %}
+{% endblock %}
+
+<div class="container">
+
+{# Header #}
+
+{% block Header %}
+{% include 'headerView.twig' %}
+{% endblock %}
+
+
+{# LEFT block #}     
+
+{% block Left %}
+{% include 'leftView.twig' %}
+{% endblock %}
+
+
+{# CENTER block #}  
+
+{% block Center %}
+{% include 'centerView.twig' %}
+{% endblock %}
+
+{# RIGHT block #} 
+
+{% block Right %}
+{% include 'rightView.twig' %}
+{% endblock %}
+
+
+
+<!-- The Modal -->
+<div id="modal" class="hidden fixed top-0 left-0 z-80 w-screen h-screen bg-black/70 flex justify-center items-center">
+
+<!-- The close button -->
+<a class="fixed z-90 top-6 right-8 text-white text-5xl font-bold" href="javascript:void(0)"
+    onclick="closeModal()">&times;</a>
+
+<!-- A big image will be displayed here -->
+<img id="modal-img" class="max-w-[100%] max-h-[100%] object-cover bg-white" />
+</div>
+
+
+<script>
+    // Get the modal by id
+    var modal = document.getElementById("modal");
+
+    // Get the modal image tag
+    var modalImg = document.getElementById("modal-img");
+
+    // this function is called when a small image is clicked
+    function showModal(src) {
+        modal.classList.remove('hidden');
+        modalImg.src = src;
+    }
+
+    // this function is called when the close button is clicked
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+</script>
+
+{% endblock %}
+
+ <script>
+  $(document).ready( function () {
+    {% if checkFieldsConn is not empty or OkInsc is not empty %} 
+    document.getElementById("linkModalConnection").click();
+     {% endif %}
+    {% if checkFieldsInsc is not empty %} 
+    document.getElementById("linkModalInscri").click();
+     {% endif %}
+    {% if checkFieldsAddCa or OkAddCa is not empty  is not empty %} 
+    document.getElementById("linkModalAddCalendar").click();
+     {% endif %}
+     }); 
+</script>

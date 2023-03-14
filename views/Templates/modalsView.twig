@@ -1,0 +1,138 @@
+
+{% block Modals %}
+
+<form action="../controllers/connectionController.php" method="POST"> 
+<div id="openModalConnection" class="modalDialog"> 
+        <div>	<a href="#close" title="Fermer" class="close">X</a>
+        <h2  class="title" >Connection</h2>
+
+                <div class="space">
+                    <label for="email">Mail :</label>
+                    <input  class="input"  required="required" type="email" name="email" id="email">
+                </div>
+
+                <div class="space">
+                    <label for="mot_de_passe">Mot de passe :</label>
+                    <input  class="input"  required="required" type="password" name="mot_de_passe" id="mot_de_passe">
+                </div>
+
+                <div class="space centerText">
+                    <button type="submit" class="buttonPurple">Valider</button> 
+                </div> 
+
+                <div class="space centerText">
+                  <a href="#openModalInscri" id="linkModalInscri" class="linkInscription">
+                   S'inscrire
+                   </a>
+                </div> 
+                
+                <div class="errorMessage">
+                {{  checkFieldsConn|raw }}
+                </div>
+
+                <div class="OkMessage">
+                {{  OkInsc|raw }}
+                </div>
+                
+        </div>
+</div>
+
+  </form>  
+
+    
+<form action="../controllers/addCalendarController.php" method="POST"> 
+    <div id="openModalAddCalendar" class="modalDialog"> 
+            <div>	<a href="#close" title="Fermer" class="close">X</a>
+            <h2  class="title" >Nouvel agenda</h2>
+                    <div class="space">
+                        <label for="nom">Nom :</label>
+                        <input class="input"  required="required" type="text" name="nom" id="nom">
+                    </div>
+
+                    <div class="space">
+                         <input type="checkbox" id="private" name="private">
+                        <label for="private">Private</label>
+                    </div>
+
+                    <div class="space centerText">
+                        <button type="submit" class="buttonPurple">Valider</button> 
+                    </div> 
+                <div class="errorMessage">
+                {{  checkFieldsAddCa|raw }}
+                </div>
+
+                <div class="OkMessage">
+                {{  OkAddCa|raw }}
+                </div>
+
+            </div>
+    </div>
+</form>  
+
+
+<form action="../controllers/inscriptionController.php" method="POST"> 
+    <div id="openModalInscri" class="modalDialog"> 
+            <div>	<a href="#close" title="Fermer" class="close">X</a>
+            <h2  class="title" >Formulaire d’inscription</h2>
+                    <div class="space">
+                        <label for="nom">Nom :</label>
+                        <input class="input"  required="required" type="text" name="nom" id="nom">
+                    </div>
+
+                    <div class="space">
+                        <label for="email">Mail :</label>
+                        <input  class="input"  required="required" type="email" name="email" id="email">
+                    </div>
+
+                    <div class="space">
+                        <label for="mot_de_passe">Mot de passe :</label>
+                        <input  class="input"  required="required" type="password" name="mot_de_passe" id="mot_de_passe">
+                    </div>
+
+                    <div class="space centerText">
+                        <button type="submit" class="buttonPurple">Valider</button> 
+                    </div> 
+
+                    <div class="errorMessage">
+                    {{  checkFieldsInsc|raw }}
+                    </div>
+
+            </div>
+    </div>
+</form>  
+
+<script>
+    // Get the modal by id
+    var modal = document.getElementById("modal");
+
+    // Get the modal image tag
+    var modalImg = document.getElementById("modal-img");
+
+    // this function is called when a small image is clicked
+    function showModal(src) {
+        modal.classList.remove('hidden');
+        modalImg.src = src;
+    }
+
+    // this function is called when the close button is clicked
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+</script>
+
+<script>
+    $(document).ready( function () {
+      {% if checkFieldsConn is not empty or OkInsc is not empty %} 
+      document.getElementById("linkModalConnection").click();
+       {% endif %}
+      {% if checkFieldsInsc is not empty %} 
+      document.getElementById("linkModalInscri").click();
+       {% endif %}
+      {% if checkFieldsAddCa or OkAddCa is not empty  is not empty %} 
+      document.getElementById("linkModalAddCalendar").click();
+       {% endif %}
+       }); 
+  </script>
+
+
+{% endblock %}

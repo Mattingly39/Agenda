@@ -1,0 +1,224 @@
+
+{% block Right %}
+
+<div class="right" style="overflow:scroll; height:700px; overflow-x: hidden;">
+{% set idcurrentcal = idcal %} {% set visib = 0 %} {% set visia = 0 %}{% set nbrcalpu = 0 %} {% set nbrcalpr = 0 %}
+{% if change == 2 or user is empty %}
+    {% for idcal in idcals %}
+        {% if idcal.visibility == 1 %}
+            {% set nbrcalpu = nbrcalpu + 1 %}
+        {% else %}
+            {% set nbrcalpr = nbrcalpr + 1 %}
+        {% endif %}
+        {% if idcal.ID == idcurrentcal %}
+            {% set visib = idcal.visibility %}
+        {% endif %}
+    {% endfor %}
+{% set nbrtotal = nbrcalpu + nbrcalpr %}
+{% if user is not empty %}
+    <div class="font-bold text-red-500">Mes agendas</div>
+    <div class="grid-agendas">
+    {% for mycalendar in mycalendars %}
+        {% if mycalendar.visibility == 1 %}
+            {% set visia = visia + 1 %}
+            <div class="bg_cal3">
+            <br>
+            <div class="font-bold text-center"> <a href="../?month={{ currentmonth }}&year={{ currentyear }}&monthnew={{ currentmonth|date("m") }}&change=1&idcal={{ mycalendar.ID }}">
+            <span class="hover:underline">{{ mycalendar.name }}</span><br><div class="text-xs text-center text-green-500">(public)</div></a>
+            <div class="text-xs text-center">{{ mycalendar.date|date("d-m-Y") }}</div>
+            <div class="font-bold text-center text-white hover:text-black">
+            <a href="../?day={{ dayselected }}&month={{ month }}&year={{ year }}&idcaldel={{ mycalendar.ID }}&idcal={{ idcal }}&change=1&funct=delagenda" 
+            onclick="return confirm('Ok pour suppression ?')" title="Supprimer cet agenda" class="circlebig3">&nbsp;X&nbsp;</a>
+            </div>
+            </div>
+        </div>
+        {% else %}
+            {% set visib = visib + 1 %}
+            <div class="bg_cal4">
+            <br>
+            <div class="font-bold text-center"><a href="../?month={{ currentmonth }}&year={{ currentyear }}&monthnew={{ currentmonth|date("m") }}&change=1&idcal={{ mycalendar.ID }}">
+            <span class="hover:underline">{{ mycalendar.name }}</span><br><div class="text-xs text-center text-red-500">(privé)</div></a>
+            <div class="text-xs text-center">{{ mycalendar.date|date("d-m-Y") }}</div>
+            <div class="font-bold text-center text-white hover:text-black">
+            <a href="../?day={{ dayselected }}&month={{ month }}&year={{ year }}&idcaldel={{ mycalendar.ID }}&idcal={{ idcal }}&change=1&funct=delagenda" 
+            onclick="return confirm('Ok pour suppression ?')" title="Supprimer cet agenda" class="circlebig3">&nbsp;X&nbsp;</a>
+            </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+--------------------------------------<br>
+{% endif %}
+<div class="font-bold text-center">Il y a 
+{% if user is empty %}
+    {{ nbrcalpu }}
+    {% else %}
+    {{ nbrcalpu - visia}}
+{% endif %}
+{% if user is not empty %}
+    autre(s)
+{% endif %}agenda(s) public(s)</div>
+<div class="grid-agendas">
+{% for idcal in idcals %}
+    {% if idcal.visibility == 1  and idcal.username != user %}
+        <div class="bg_cal3">
+        <br><div class="text-center">{{ idcal.username }}</div>
+        <div class="font-bold text-center"> <a href="../?month={{ currentmonth }}&year={{ currentyear }}&monthnew={{ currentmonth|date("m") }}&change=1&idcal={{ idcal.calid }}">
+        <span class="hover:underline">{{ idcal.namecal }}</span></a></div>
+        <div class="text-xs text-center">{{ idcal.caldate|date("d-m-Y") }}</div>
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+--------------------------------------<br>
+<div class="font-bold text-center">Il y a
+{% if user is empty %}
+    {{ nbrcalpr}}
+{% else %}
+    {{ nbrcalpr - visib}}
+{% endif %}
+{% if user is not empty %}
+    autre(s)
+{% endif %}agenda(s) privé(s)</div>
+<div class="grid-agendas blur-sm">
+{% for idcal in idcals %}
+    {% if idcal.visibility != 1  and idcal.username != user %}
+        <div class="bg_cal4">
+        <br><br>
+        <div class="font-bold text-center text-gray-400">{{ idcal.namecal }} </a></div>
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+<br>
+<div>
+Trier les agendas par : <br>
+<label for="sort"><i class="fi fi-filter text-[#1190ea]"></i></label>
+<select name="sort" id="sort"
+    class="text-lg"
+    onchange="window.location = '../?month={{ currentmonth }}&year={{ currentyear }}&monthnew={{ currentmonth|date("m") }}&change=2&idcal={{ idcal.calid }}&order{{ order }}=&sort='+this.value">
+    <option value="{{ sort }}">{{ sort }}</option>
+    {% if (sort != 'Nom') %}
+        <option value="Nom">Nom</option>
+    {% endif %}
+    {% if (sort != 'Date création') %}
+        <option value="Date création">Date de création</option>
+    {% endif %}
+    {% if (sort != 'Propriétaire') %}
+        <option value="Propriétaire">Propriétaire</option>
+    {% endif %}
+</select>
+<select name="order" id="order"
+    onchange="window.location = '../?month={{ currentmonth }}&year={{ currentyear }}&monthnew={{ currentmonth|date("m") }}&change=2&idcal={{ idcal.calid }}&sort={{ sort }}&order='+this.value">
+    <option value="{{ order }}">{{ order }}</option>
+    {% if (order != 'ASC') %}
+        <option value="ASC">ASC</option>
+    {% endif %}
+    {% if (order != 'DESC') %}
+        <option value="DESC">DESC</option>
+    {% endif %}
+</select>
+</div>
+{% else %}
+<form action="../controllers/addEvenementController.php?idcal={{ idcal }}" method="POST"> 
+    <div class="date-task">Ajouter un évenement</div>
+    <br>
+    <span class="text-red-500">* Saisie obligatoire</span>
+    <div class="gridaddevent">
+    <div class="titre">
+    <label for="titre" class="labelAddEve">Titre<span class="text-2xl text-red-500">*</span></label>
+    <input type="text"  required="required"  class="labelAddEve" name="titre" id="titre"/> : 
+    </div>
+    <div class="labelAddEve span1and3">Date début<span class="text-2xl text-red-500">*</span><input  name="dateDebut"  id="dateDebut" required="required" type="date" class="dateInput"></div><div class="labelAddEve span4and6" >Heure<input   id="heureDebut" name="heureDebut" class="heureInput" type="time"></div>
+    <div class="labelAddEve span1and3">Date fin____<input type="date"  id="dateFin" class="dateInput"  name="dateFin"></div><div class="labelAddEve span4and6"  >Heure<input class="heureInput"    id="heureFin" name="heureFin" type="time"></div>
+    <div class="labelAddEve">Visibilité</div>
+    <div class="span2and6">
+    <input class="labelAddEve"  type="radio" id="Publique" name="Visibilite" value="Publique" checked>
+    <label class="labelAddEve"  for="Publique">Public</label>
+    <input class="labelAddEve"  type="radio" id="Prive" name="Visibilite" value="Prive">
+    <label class="labelAddEve"  for="Prive">Privé</label>
+    </div> 
+    <div class="labelAddEve">Description</div><div></div><div></div><div></div><div></div>
+    <div class="titre">
+    <label  class="labelAddEve" for="description"></label>
+    <textarea class="labelAddEve" name="description" id="description" cols="30" rows="5"></textarea>
+    </div><br>
+    <div class="invités labelAddEve">Liste des invités<br>(parmi les inscrits)</div><div></div><div></div><div></div><div></div>
+    {% for listeUsers in listeUsers %}
+        <div class="listeinvites labelAddEve">
+        <input   type="checkbox" id="invite{{listeUsers.ID}}" name="invite{{listeUsers.ID}}" value="invite{{listeUsers.ID}}">
+        <label  for="invite{{listeUsers.ID}}"> {{listeUsers.name}}</label>
+        </div>
+    {% endfor %}
+    <div></div>
+    <br><br>
+    </div>
+    <br>
+    <div class="errorMessage">
+    {{  checkFieldsAddEve|raw }}
+    </div>
+    <div class="boutonsg">
+    {# <div class="text-3xl font-bold text-center text-white hover:text-black"><a href="#" title="Ajouter invité" class="circlebig2">&nbsp;+&nbsp;</a></div>
+    <div>Ajouter un invité</div>
+    <div></div> 
+    <div></div>#}
+    <a href="../?idcal={{ idcal }}"><button class="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-1 px-2 rounded">Enregistrer</button></a>
+    <button onclick="EffacerChamps();" class="bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-1 px-2 rounded">Effacer formulaire</button> 
+    </div>
+    </div>
+</form>
+{% endif %}
+<!-- The Modal -->
+<div id="modal" class="hidden fixed top-0 left-0 z-80 w-screen h-screen bg-black/70 flex justify-center items-center">
+<!-- The close button -->
+<a class="fixed z-90 top-6 right-8 text-white text-5xl font-bold" href="javascript:void(0)"
+    onclick="closeModal()">&times;</a>
+<!-- A big image will be displayed here -->
+<img id="modal-img" class="max-w-[100%] max-h-[100%] object-cover bg-white">
+</div>
+
+<script>
+    // Get the modal by id
+    var modal = document.getElementById("modal");
+    // Get the modal image tag
+    var modalImg = document.getElementById("modal-img");
+    // this function is called when a small image is clicked
+    function showModal(src) {
+        modal.classList.remove('hidden');
+        modalImg.src = src;
+    }
+    // this function is called when the close button is clicked
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+</script>
+
+{% endblock %}
+
+ <script>
+  $(document).ready( function () {
+    {% if checkFieldsConn is not empty or OkInsc is not empty %} 
+    document.getElementById("linkModalConnection").click();
+     {% endif %}
+    {% if checkFieldsInsc is not empty %} 
+    document.getElementById("linkModalInscri").click();
+     {% endif %}
+    {% if checkFieldsAddCa or OkAddCa is not empty  is not empty %} 
+    document.getElementById("linkModalAddCalendar").click();
+     {% endif %}
+     });
+ 
+  
+function EffacerChamps() {
+     document.getElementById("dateDebut").value = "";
+     document.getElementById("dateFin").value = "";
+     document.getElementById("heureDebut").value = "";
+     document.getElementById("heureFin").value = "";
+     document.getElementById("Publique").click();
+     document.getElementById("description").value = "";
+    $(':checkbox').each(function() {
+        this.checked = false;                        
+      });
+}
+  </script>

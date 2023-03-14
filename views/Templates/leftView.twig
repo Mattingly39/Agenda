@@ -1,0 +1,144 @@
+
+{% block Left %}
+
+<div class="Left" style="overflow:scroll; height:700px; overflow-x: hidden;">
+<div class="date-task">
+{% if dayselected != 0 %}
+    {{ "%02d"|format(dayselected) }} 
+{% endif %}
+{{ mois }} {{ year }}
+</div>
+<br>
+{% if dayselected == 0 %}  
+    <img src="../public/images/cal_{{ mois }}.jpg" alt="{{ mois }}" class="w-full h-full object-cover cursor-pointer" onclick="showModal('../public/images/cal_{{ mois }}.jpg')">
+{% endif %}
+{% for event in events %}
+    {% if event.start_date == year ~ '-' ~ "%02d"|format(monthnew) ~ '-' ~ "%02d"|format(dayselected) %} 
+        {% if event.visibility == 1 %}
+            <div class="grid-task">
+        {% elseif event.visibility == 0 %}
+            <div class="grid-taskprivate">
+        {% endif %}
+    {% if user == event.name %}
+        {% if editevent is not empty %}
+        {% for idevent in editevent %}
+            {% if idevent.ID == event.eventid %}
+            <form action="../?id={{ event.eventid }}&day={{ dayselected }}&month={{ month }}&year={{ year }}&idcal={{ idcal }}&change=0&funct=save" method="POST">
+                {% if event.visibility == 1 %}
+                    <div class="grid-task2">
+                {% elseif event.visibility == 0 %}
+                    <div class="grid-taskprivate2">
+                {% endif %}
+            <div class="time-start text-center">Début<input id="heureDebut" name="heureDebut" class="heureInput bg-yellow-200" type="time" value='{{ event.start_time|date('H:i')}}' maxlength="5" size="1.8"></div>
+            <div class="titleevent"><input type="text" class="bg-yellow-200 mx-1 my-1 text-center" id="title" name="title" value='{{ event.title}}' maxlength="20" size="12"></div>
+            <div class="visibility">
+                {% if event.visibility == 1 %}
+                    <input type="radio" class="bg-yellow-200" id="visibility" name="visibility" value=0>Privé<br>
+                    <input type="radio" class="bg-yellow-200" name="visibility" value=1 checked="checked">Public</div>
+                {% elseif event.visibility == 0 %}
+                    <input type="radio" class="bg-yellow-200" id="visibility" name="visibility" value=0 checked="checked">Privé<br>
+                    <input type="radio" class="bg-yellow-200" name="visibility" value=1 >Public</div>
+                {% endif %}
+            <div class="text-3xl font-bold text-center text-white hover:text-black"></div>
+            <textarea name="description" class="bg-yellow-200 my-2" id="description" cols="28" rows="5" >{{event.description}}</textarea>
+            <div class="time-end text-center">Fin<br><input id="heureDebut" name="heureDebut" class="heureInput bg-yellow-200" type="time" value='{{ event.end_time}}' maxlength="5" size="1.8"></div>
+            <div></div>
+            <input type="submit" class="bg-green-500 text-xl font-bold text-center text-black hover:text-white py-2 rounded-full" value=" Valider ">
+            <div><a class="font-bold">Date fin</a><br><input type="date"  id="dateFin" class="dateInput bg-yellow-200"  name="dateFin" value='{{ event.end_date|date('d/m/y')}}' maxlength="10"></div></div>
+            <a class="animate-ping h-full w-full rounded-full text-red-600 font-bold">&nbsp;Mode édition</a>
+            </form>
+            {% endif %}
+        {% endfor %}
+        {% else %}
+            {% if event.start_time is not empty %}
+                <div class="time-start">  {{ event.start_time|date('H:i') }}</div>
+            {% else %}
+                <div class="time-start">---</div>
+            {% endif %}
+        <div class="titleevent">   {{ event.title }} </div>
+        <div>
+            {% if event.visibility == 1 %}
+                Public
+            {% elseif event.visibility == 0 %}
+                Privé
+            {% endif %}
+        </div>
+        <div class="text-3xl font-bold text-center text-white hover:text-black">
+        <a href="../?id={{ event.eventid }}&day={{ dayselected }}&month={{ month }}&year={{ year }}&idcal={{ idcal }}&change=0&funct=edit" 
+        title="Editer l'évènement" class="circlebig">&#9998;</a>
+        </div>
+        <div class="description">{{ event.description }}</div>
+        <div class="text-3xl font-bold text-center text-white hover:text-black">
+        <a href="../?id={{ event.eventid }}&day={{ dayselected }}&month={{ month }}&year={{ year }}&idcal={{ idcal }}&change=1&funct=del" 
+        onclick="return confirm('Ok pour suppression ?')" title="Supprimer l'évènement" class="circlebig3">&nbsp;X&nbsp;</a></div>
+        {% if event.end_time is not empty %}
+            <div class="time-end">{{ event.end_time|date('H:i') }}</div>
+        {% else %}
+            <div class="time-end">---</div>
+        {% endif %}
+        {% if event.date_difference != 0 %}
+            <div>Durée : {{ event.date_difference }} jours</div>
+        {% else %}
+            <div></div>
+        {% endif %}
+    {% endif %}
+<div></div>   
+    {% elseif user != event.name and event.visibility == 1 %}
+        {% if event.start_time is not empty %}
+            <div class="time-start">  {{ event.start_time|date('H:i') }}</div>
+        {% else %}
+            <div class="time-start">---</div>
+        {% endif %}
+    <div class="titleevent">   {{ event.title }} </div>
+    <div></div>
+    <div></div>
+    <div class="description">{{ event.description }}</div>
+    <div></div>
+    {% if event.end_time is not empty %}
+        <div class="time-end">{{ event.end_time|date('H:i') }}</div>
+    {% else %}
+        <div class="time-end">---</div>
+    {% endif %}
+{% if event.date_difference != 0 %}
+    <div>Durée : {{ event.date_difference }} jour(s)</div>
+{% else %}
+<div></div> 
+{% endif %}
+<div></div>
+{% endif %}
+</div>
+
+{% if event.name == user %}
+    Vous êtes le créateur de cet évenement<br>
+{% elseif (event.name != user) and (event.visibility == 1) %}
+    {{ event.name }} est le créateur de cet évenement<br>
+{% endif %}
+
+{% set num = 0 %}
+    {% for invite in listeinvites %}
+        {% if (invite.id_event == event.eventid) and (invite.name != user) and (user == event.name)%}
+            {% set num = num + 1 %}
+            Invité({{ num }}) : {{ invite.name }}<br>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endfor %}
+</div>
+
+<script>
+    // Get the modal by id
+    var modal = document.getElementById("modal");
+    // Get the modal image tag
+    var modalImg = document.getElementById("modal-img");
+    // this function is called when a small image is clicked
+    function showModal(src) {
+        modal.classList.remove('hidden');
+        modalImg.src = src;
+    }
+    // this function is called when the close button is clicked
+    function closeModal() {
+        modal.classList.add('hidden');
+    }
+</script>
+
+{% endblock %}

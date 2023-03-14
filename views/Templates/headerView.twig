@@ -1,0 +1,88 @@
+
+{% block Header %}
+
+{# LEFT #}
+<div class="headerl">
+<a href="../?month={{ currentmonth }}&year={{ currentyear }}&change=1&monthnew={{ currentmonth|date("m") }}"><img src="../public/images/lilas.png" alt="Logo lilas" title="Mois en cours"></a>
+{% if user is not empty %}
+<a href="#openModalAddCalendar" id="linkModalAddCalendar"><button class="m-3 bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-2 rounded-lg shadow-lg">
+    <img src="../public/images/addcalendar.png" alt="icone agenda" title="Créer un agenda" class="icone"></button></a>
+    <div>
+    {% for mon in idcals %}
+    {% if mon.username == user %}
+        {% if mon.calid == idcal %}
+            <form method="GET" onchange="window.location = '../?month={{ month }}&year={{ year }}&idcal={{ idcal }}&change=2&funct=visical&visibilitycal='+this.visibilitycal.value">
+            <br><a class="font-bold">Visibilité</a><br>
+            {% if mon.visibility == 0 %}
+                <input type="radio" class="bg-yellow-200" id="visibilitycal" name="visibilitycal" value=0 checked="checked"> Privé
+                <br>
+                <input type="radio" class="bg-yellow-200" id="visibilitycal" name="visibilitycal" value=1 >Public
+            {% elseif mon.visibility == 1 %}
+                <input type="radio" class="bg-yellow-200" id="visibilitycal" name="visibilitycal" value=0> Privé
+                <br>
+                <input type="radio" class="bg-yellow-200" id="visibilitycal" name="visibilitycal" value=1 checked="checked"> Public
+            {% endif %}
+            </form>
+        {% endif %}
+    {% endif %}
+    {% endfor %}
+</div>
+</div>
+{% else %}
+</div>
+{% endif %}
+
+
+{# CENTER #}
+<div class="headerc">
+<div>
+{% if user is not empty %}
+    <span class="font-bold">{{ user }}</span> vous êtes connecté
+{% else %}
+    <strong>Pour utiliser les fonctionnalités complètes de LiL'Agenda, connectez-vous !</strong>
+{% endif %}
+</div>
+<div class="text-center">
+{% for mon in idcals %}
+    {% if mon.calid == idcal %}
+        <span class="text-3xl sm:text-xl font-bold tracking-wide text-center text-black bg-white dark:border-gray-700">&nbsp;{{ mon.namecal }}&nbsp;</span><br>
+        Cet agenda est
+        {% if mon.visibility == 0 %}<span class="text-xl font-bold text-red-500">Privé</span>
+        {% else %}<span class="text-xl font-bold text-black">Public</span>
+        {% endif %}
+        {% if mon.username != user %}
+        et il a été crée par {{mon.username}}
+        {% else %}
+        et il vous appartient
+        {% endif %}
+    {% endif %}
+{% endfor %}
+</div>
+<div class="text-center">
+Il y a <span class="font-bold">{{ compteur }}</span> événement(s) enregistré(s) dans cet agenda 
+{% if compteurprivate != 0 %}
+    dont <span class="font-bold text-red-500">{{ compteurprivate }}</span> évènement(s) privé(s)
+{% endif %}
+</div>
+</div>
+
+{# RIGHT #}
+<div class="headerr">
+{% if user is not empty %}
+<a href="../?month={{ month }}&year={{ year }}&change=2&idcal={{ idcal }}"><button class="m-3 bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-2 rounded-lg shadow-lg">
+    <img src="../public/images/calendarothers.png" alt="icone agenda" class="icone" title="Voir les agendas"></button></a>
+{% else %}
+    <div></div>
+{% endif %}
+{% if user is empty %}
+<a href="#openModalConnection" id="linkModalConnection"><button class="m-3 lg:m-1 bg-fuchsia-500 hover:bg-fuchsia-700 text-white font-bold py-2 px-2 rounded-lg shadow-lg">
+    <img src="../public/images/3757765.png" alt="icone agenda" class="icone" title="Se connecter"></button></a>
+{% else %}
+<a href="../?deConnected=1&month={{ month }}&year={{ year }}&change=2"><button class="m-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-2 rounded-lg shadow-lg">
+    <img src="../public/images/3757765reverse.png" alt="icone agendareverse" class="icone" title="Se deconnecter"></button></a>
+{% endif %}
+<a><img src="../public/images/lilasreverse.png" alt="Logo lilas"></a>
+</div>
+
+
+{% endblock %}
